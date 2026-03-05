@@ -31,6 +31,22 @@ export const getProductById = async (
   }
 };
 
+export const getProductByHandle = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const product = await productService.getProductByHandle(req.params.handle);
+    if (!product) {
+      throw new AppError('Product not found', 404);
+    }
+    res.json({ status: 'success', data: product });
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const createProduct = async (
   req: Request,
   res: Response,

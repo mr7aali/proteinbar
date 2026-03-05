@@ -5,6 +5,7 @@ import { authenticate } from '../../middlewares/auth';
 const router = Router();
 
 router.get('/', productController.getAllProducts);
+router.get('/handle/:handle', productController.getProductByHandle);
 router.get('/:id', productController.getProductById);
 router.post('/', authenticate, productController.createProduct);
 router.put('/:id', authenticate, productController.updateProduct);
