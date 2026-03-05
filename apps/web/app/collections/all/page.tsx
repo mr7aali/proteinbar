@@ -1,21 +1,43 @@
+'use client';
+
 import Image from "next/image";
 import Link from "next/link";
 import Section from "@/components/ui/Section";
-import { storeProducts } from "@/data/products";
+import { useGetProductsQuery } from "@/lib/store/services/products";
 
 export default function AllCollectionsPage() {
+  const { data, isLoading, error } = useGetProductsQuery();
+
+  if (isLoading) {
+    return (
+      <Section title="Our Products" className="pt-24 sm:pt-28">
+        <div className="text-center text-zinc-600">Loading products...</div>
+      </Section>
+    );
+  }
+
+  if (error) {
+    return (
+      <Section title="Our Products" className="pt-24 sm:pt-28">
+        <div className="text-center text-red-600">Failed to load products. Please try again later.</div>
+      </Section>
+    );
+  }
+
+  const products = data?.data || [];
+
   return (
     <Section title="Our Products" className="pt-24 sm:pt-28">
       <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-        {storeProducts.map((product) => (
+        {products.map((product) => (
           <Link
-            key={product.id}
+            key={product._id}
             href={`/products/${product.handle}`}
             className="group rounded-2xl border border-zinc-200 bg-white p-3 shadow-sm transition hover:-translate-y-1 hover:shadow-md"
           >
             <div className="relative aspect-square overflow-hidden rounded-xl">
               <Image
-                src={product.image}
+                src={product.image || '/food/food.png'}
                 alt={product.title}
                 fill
                 className="object-cover transition duration-500 group-hover:scale-105"

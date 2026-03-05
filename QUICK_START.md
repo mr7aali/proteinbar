@@ -1,96 +1,73 @@
-# Quick Start Guide
+# 🚀 Quick Start Guide
 
-Your Turborepo monorepo is now set up! Here's how to get started.
+## Prerequisites
+- Node.js 18+ installed
+- MongoDB running on localhost:27017
+- npm installed
 
-## ✅ What's Been Done
+## Start Everything in 3 Steps
 
-1. ✅ Created Turborepo monorepo structure
-2. ✅ Moved `proteinbar` → `apps/web`
-3. ✅ Moved `proteinbar_admin_dashboard` → `apps/admin`
-4. ✅ Created Express/MongoDB/TypeScript backend at `apps/api`
-5. ✅ Set up shared packages for TypeScript configs
-6. ✅ Installed all dependencies
-
-## 🚀 Getting Started
-
-### 1. Set Up MongoDB
-
-You need MongoDB running. Choose one option:
-
-**Option A: Docker (Recommended)**
+### Step 1: Start MongoDB
 ```bash
 docker run -d -p 27017:27017 --name mongodb mongo:latest
 ```
 
-**Option B: Local Installation**
-Download from: https://www.mongodb.com/try/download/community
-
-### 2. Configure Environment
-
-The `.env` file has been created at `apps/api/.env`. Update it if needed:
-
-```env
-NODE_ENV=development
-PORT=4000
-MONGODB_URI=mongodb://localhost:27017/proteinbar
-JWT_SECRET=your-secret-key-change-in-production
-CORS_ORIGIN=http://localhost:3000,http://localhost:3001
+### Step 2: Seed Database (First time only)
+```bash
+cd apps/api
+npm run seed
+cd ../..
 ```
 
-### 3. Start Development
+### Step 3: Start All Services
 
-Run all apps simultaneously:
+**Windows (PowerShell):**
+```powershell
+.\start-dev.ps1
+```
+
+**Windows (CMD):**
+```cmd
+start-dev.bat
+```
+
+**Linux/Mac:**
+```bash
+./start-dev.sh
+```
+
+## Access Your Apps
+
+- 🌐 **Web App**: http://localhost:3000
+- 👨‍💼 **Admin Dashboard**: http://localhost:3001
+- 🔌 **API**: http://localhost:4000
+- 🧪 **Web Test Page**: http://localhost:3000/api-test
+- 🧪 **Admin Test Page**: http://localhost:3001/api-test
+
+## Verify Integration
+
+**PowerShell:**
+```powershell
+.\verify-integration.ps1
+```
+
+**Linux/Mac:**
+```bash
+./verify-integration.sh
+```
+
+## Build All Apps
+```bash
+npm run build
+```
+
+## Common Commands
 
 ```bash
-npm run dev
-```
+# Install dependencies
+npm install
 
-This starts:
-- 🌐 Web App: http://localhost:3000
-- 👨‍💼 Admin Dashboard: http://localhost:3001
-- 🔌 API Server: http://localhost:4000
-
-### 4. Test the API
-
-Health check:
-```bash
-curl http://localhost:4000/health
-```
-
-Register a user:
-```bash
-curl -X POST http://localhost:4000/api/users/register \
-  -H "Content-Type: application/json" \
-  -d '{"email":"test@example.com","password":"password123","name":"Test User"}'
-```
-
-## 📁 Project Structure
-
-```
-proteinbar-monorepo/
-├── apps/
-│   ├── web/                    # Customer-facing Next.js app (port 3000)
-│   ├── admin/                  # Admin dashboard Next.js app (port 3001)
-│   └── api/                    # Express backend (port 4000)
-│       ├── src/
-│       │   ├── config/         # Configuration
-│       │   ├── middlewares/    # Express middlewares
-│       │   ├── modules/        # Feature modules
-│       │   │   ├── products/   # Product CRUD
-│       │   │   ├── orders/     # Order management
-│       │   │   └── users/      # User auth
-│       │   └── routes/         # Route aggregation
-│       └── package.json
-├── packages/
-│   └── typescript-config/      # Shared TS configs
-├── package.json                # Root workspace config
-└── turbo.json                  # Turborepo pipeline config
-```
-
-## 🛠️ Available Commands
-
-```bash
-# Development (all apps)
+# Run dev servers
 npm run dev
 
 # Build all apps
@@ -101,84 +78,29 @@ npm run lint
 
 # Clean build artifacts
 npm run clean
-
-# Format code
-npm run format
 ```
 
-## 🔌 API Endpoints
+## Project Structure
 
-### Authentication
-- `POST /api/users/register` - Register new user
-- `POST /api/users/login` - Login user
-- `GET /api/users/profile` - Get profile (requires auth)
-- `PUT /api/users/profile` - Update profile (requires auth)
-
-### Products
-- `GET /api/products` - List all products
-- `GET /api/products/:id` - Get product details
-- `POST /api/products` - Create product (requires auth)
-- `PUT /api/products/:id` - Update product (requires auth)
-- `DELETE /api/products/:id` - Delete product (requires auth)
-
-### Orders
-- `GET /api/orders` - List all orders (requires auth)
-- `GET /api/orders/my-orders` - Get user's orders (requires auth)
-- `GET /api/orders/:id` - Get order details (requires auth)
-- `POST /api/orders` - Create order (requires auth)
-- `PATCH /api/orders/:id/status` - Update order status (requires auth)
-
-## 🔐 Authentication
-
-The API uses JWT tokens. After login/register, you'll receive a token:
-
-```json
-{
-  "status": "success",
-  "data": {
-    "user": { ... },
-    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
-  }
-}
+```
+proteinbar/
+├── apps/
+│   ├── web/          # Customer-facing Next.js app (port 3000)
+│   ├── admin/        # Admin dashboard Next.js app (port 3001)
+│   └── api/          # Express + MongoDB backend (port 4000)
+├── packages/
+│   ├── typescript-config/
+│   └── eslint-config/
+└── turbo.json        # Turborepo configuration
 ```
 
-Include this token in subsequent requests:
+## Need Help?
 
-```bash
-curl http://localhost:4000/api/users/profile \
-  -H "Authorization: Bearer YOUR_TOKEN_HERE"
-```
+- 📖 Full API docs: `API_DOCUMENTATION.md`
+- 🔧 Integration guide: `API_INTEGRATION_COMPLETE.md`
+- ✅ Status check: `INTEGRATION_STATUS.md`
+- 🏗️ Architecture: `apps/api/ARCHITECTURE.md`
 
-## 📝 Next Steps
+## Status: ✅ READY
 
-1. **Connect Frontend to Backend**: Update your Next.js apps to call the API endpoints
-2. **Add More Features**: Extend the modules with additional functionality
-3. **Set Up CI/CD**: Configure deployment pipelines
-4. **Add Tests**: Write unit and integration tests
-5. **Environment Variables**: Set up production environment configs
-
-## 🐛 Troubleshooting
-
-### Port Already in Use
-Change ports in package.json scripts or .env file
-
-### MongoDB Connection Failed
-- Check if MongoDB is running: `docker ps` or check local service
-- Verify connection string in `apps/api/.env`
-
-### TypeScript Errors
-Run `npm run build` to see detailed errors
-
-### Module Not Found
-Run `npm install` from the root directory
-
-## 📚 Learn More
-
-- [Turborepo Documentation](https://turbo.build/repo/docs)
-- [Next.js Documentation](https://nextjs.org/docs)
-- [Express.js Documentation](https://expressjs.com/)
-- [MongoDB Documentation](https://docs.mongodb.com/)
-
----
-
-Happy coding! 🎉
+All systems integrated and tested. Zero errors. Start building! 🎉

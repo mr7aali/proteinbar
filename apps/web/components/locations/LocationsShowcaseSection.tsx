@@ -1,5 +1,7 @@
+'use client';
+
 import Image from "next/image";
-import { locations } from "@/data/locations";
+import { useGetLocationsQuery } from "@/lib/store/services/locations";
 
 const locationVisuals: Record<
   string,
@@ -19,6 +21,30 @@ const locationVisuals: Record<
 };
 
 export default function LocationsShowcaseSection() {
+  const { data, isLoading, error } = useGetLocationsQuery();
+
+  if (isLoading) {
+    return (
+      <section className="relative left-1/2 right-1/2 -mx-[50vw] -mb-8 w-screen sm:-mb-10">
+        <div className="flex min-h-[62vh] items-center justify-center">
+          <p className="text-zinc-600">Loading locations...</p>
+        </div>
+      </section>
+    );
+  }
+
+  if (error) {
+    return (
+      <section className="relative left-1/2 right-1/2 -mx-[50vw] -mb-8 w-screen sm:-mb-10">
+        <div className="flex min-h-[62vh] items-center justify-center">
+          <p className="text-red-600">Failed to load locations</p>
+        </div>
+      </section>
+    );
+  }
+
+  const locations = data?.data || [];
+
   return (
     <section className="relative left-1/2 right-1/2 -mx-[50vw] -mb-8 w-screen sm:-mb-10">
       {locations.map((location) => {
@@ -28,7 +54,7 @@ export default function LocationsShowcaseSection() {
         };
 
         return (
-          <article key={location.id} className="relative min-h-[62vh] overflow-hidden sm:min-h-[72vh] lg:min-h-[78vh]">
+          <article key={location._id} className="relative min-h-[62vh] overflow-hidden sm:min-h-[72vh] lg:min-h-[78vh]">
             <Image src={visual.image} alt={location.name} fill className="object-cover" />
             <div className="absolute inset-0 bg-black/65" />
             <div className="absolute inset-x-0 bottom-0 z-10 px-4 pb-10 sm:px-8 sm:pb-14 lg:px-12">
@@ -65,4 +91,3 @@ export default function LocationsShowcaseSection() {
     </section>
   );
 }
-

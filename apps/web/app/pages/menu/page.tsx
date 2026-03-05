@@ -1,7 +1,9 @@
+'use client';
+
 import MenuCategoryJumpSection from "@/components/menu/MenuCategoryJumpSection";
 import MenuHeroSection from "@/components/menu/MenuHeroSection";
 import Section from "@/components/ui/Section";
-import { menuCategories } from "@/data/menu";
+import { useGetMenuCategoriesQuery } from "@/lib/store/services/menu";
 
 const categoryNotes: Record<string, string[]> = {
   "high-protein-breakfast": [
@@ -17,7 +19,7 @@ const categoryNotes: Record<string, string[]> = {
   "smoothies-drinks": [
     "Supplément: Double prots - 60g Thon, 17g de protéines - 15 DH",
     "Supplément: Double prots - 100g poulet crispy au four, 21g de protéines - 20 DH",
-    "Tous nos Wrap sont accompagnés de 100 gr de pomme de terre ou de patates douces au four et d’un mesclun salade.",
+    "Tous nos Wrap sont accompagnés de 100 gr de pomme de terre ou de patates douces au four et d'un mesclun salade.",
   ],
   "healthy-burgers": [
     "Supplément: Steak de poisson blanc pané au four, 21g de protéines - 20 DH",
@@ -40,6 +42,32 @@ function splitItemDescription(description: string) {
 }
 
 export default function MenuPage() {
+  const { data, isLoading, error } = useGetMenuCategoriesQuery();
+
+  if (isLoading) {
+    return (
+      <>
+        <MenuHeroSection />
+        <Section className="scroll-mt-28 sm:scroll-mt-32">
+          <div className="text-center text-zinc-600">Loading menu...</div>
+        </Section>
+      </>
+    );
+  }
+
+  if (error) {
+    return (
+      <>
+        <MenuHeroSection />
+        <Section className="scroll-mt-28 sm:scroll-mt-32">
+          <div className="text-center text-red-600">Failed to load menu. Please try again later.</div>
+        </Section>
+      </>
+    );
+  }
+
+  const menuCategories = data?.data || [];
+
   return (
     <>
       <MenuHeroSection />

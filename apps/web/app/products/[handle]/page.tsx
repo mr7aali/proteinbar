@@ -1,18 +1,30 @@
+'use client';
+
 import Image from "next/image";
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, useParams } from "next/navigation";
 import ProductActions from "@/components/products/ProductActions";
-import { getProductByHandle } from "@/data/products";
+import { useGetProductByHandleQuery } from "@/lib/store/services/products";
 
-type ProductPageProps = {
-  params: Promise<{ handle: string }>;
-};
+export default function ProductPage() {
+  const params = useParams();
+  const handle = params?.handle as string;
+  
+  const { data, isLoading, error } = useGetProductByHandleQuery(handle);
 
-export default async function ProductPage({ params }: ProductPageProps) {
-  const { handle } = await params;
-  const product = getProductByHandle(handle);
+  if (isLoading) {
+    return (
+      <section className="pb-10 pt-24 sm:pb-14 sm:pt-28">
+        <div className="text-center text-zinc-600">Loading product...</div>
+      </section>
+    );
+  }
 
-  if (!product) notFound();
+  if (error || !data?.data) {
+    notFound();
+  }
+
+  const product = data.data;
 
   return (
     <section className="pb-10 pt-24 sm:pb-14 sm:pt-28">
@@ -22,7 +34,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
 
       <div className="mt-5 grid gap-8 lg:grid-cols-[minmax(0,520px)_minmax(0,1fr)] lg:items-start">
         <div className="relative aspect-square overflow-hidden rounded-2xl border border-zinc-200 bg-white">
-          <Image src={product.image} alt={product.title} fill className="object-cover" />
+          <Image src={product.image || '/food/food.png'} alt={product.title} fill className="object-cover" />
         </div>
 
         <div>
